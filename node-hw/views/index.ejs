@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <title>Cookbook</title>
+  </head>
+  <body>
+    <div class="box">
+      <h1 class="title">The Foodle Woogle</h1>
+      <form id="searchform" action="/recipe" method="GET">
+	<input type="text" id="query" name="q" placeholder="Name of Dish">
+	<input id="sub" type="submit" value="Search">
+	<a href="/lucky">
+	  <button type="button">I'm feeling hungry</button>
+	</a>
+      </form>
+    </div>
+    <% if (results) { %>
+    <div class="box" id="resultbox">
+      <h1><%= m_name %></h1>
+      <img src="<%= m_thumb %>" width="380">
+      <h2>Description</h2>
+      <p><%= m_name %> is a(n) <%= m_orig %> <%= m_cat %> dish.</p>
+      <h2>Preparation</h2>
+      <p><%= m_inst %></p>
+      <p><strong>More information:</strong> <a href="<%= m_src %>"><%= m_src %></a>.</p>
+    </div>
+    <% } %>
+  </body>
+</html>
