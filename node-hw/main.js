@@ -4,71 +4,63 @@ const path = require('path');
 const app = exp();
 
 app.set('view engine', 'ejs');
-
-// This ensures CSS/Images are served correctly from the 'static' folder
+// FIX: Using path.join ensures 'static' is found correctly
 app.use(exp.static(path.join(__dirname, 'static')));
 
 async function getRecipe(url) {
-    try {
-        const r = await fetch(url);
-        if (!r.ok) return null;
-        return await r.json();
-    } catch (e) {
-        console.error("API Fetch Error:", e);
-        return null;
-    }
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d;
 }
 
-/* Home Page */
+/* home */
 app.get('/', (req, res) => {
-    // We pass null for both so the EJS knows nothing has happened yet
-    res.render('index', { meal: null, error: null });
+    res.render('index', { results: false, error: false });
 });
 
-/* Search Results */
 app.get('/recipe', async (req, res) => {
     const s = req.query;
-    
-    // Safety check: if search is empty, just go home
-    if (!s.q) return res.redirect('/');
-
     const u = 'https://www.themealdb.com/api/json/v1/1/search.php?s=' + s.q;
     const j = await getRecipe(u);
 
+    // ERROR PREVENTION: Check if meals exist
     if (j && j.meals) {
-        console.log("[ ] Found:", j.meals[0].strMeal);
-        res.render('index', { 
-            meal: j.meals[0], 
-            error: null 
-        });
+        m_id = j.meals[0].idMeal;
+        m_name = j.meals[0].strMeal;
+        m_cat = j.meals[0].strCategory;
+        m_orig = j.meals[0].strArea;
+        m_inst = j.meals[0].strInstructions;
+        m_thumb = j.meals[0].strMealThumb;
+        m_src = j.meals[0].strSource;
+        
+        console.log("[ ] found:", m_name);
+        res.render('index', { results: true, error: false });
     } else {
-        console.log("[!] No results found for:", s.q);
-        res.render('index', { 
-            meal: null, 
-            error: `Sorry, we couldn't find any recipes for "${s.q}".` 
-        });
+        console.log("[!] no results for:", s.q);
+        res.render('index', { results: false, error: true, query: s.q });
     }
 });
 
-/* Random Recipe */
 app.get('/lucky', async (req, res) => {
     const u = 'https://www.themealdb.com/api/json/v1/1/random.php';
     const j = await getRecipe(u);
 
     if (j && j.meals) {
-        console.log("[ ] Lucky find:", j.meals[0].strMeal);
-        res.render('index', { 
-            meal: j.meals[0], 
-            error: null 
-        });
+        m_id = j.meals[0].idMeal;
+        m_name = j.meals[0].strMeal;
+        m_cat = j.meals[0].strCategory;
+        m_orig = j.meals[0].strArea;
+        m_inst = j.meals[0].strInstructions;
+        m_thumb = j.meals[0].strMealThumb;
+        m_src = j.meals[0].strSource;
+        
+        console.log("[ ] lucky find:", m_name);
+        res.render('index', { results: true, error: false });
     } else {
-        res.render('index', { 
-            meal: null, 
-            error: "The kitchen is closed! Try again in a second." 
-        });
+        res.render('index', { results: false, error: true, query: "Random" });
     }
 });
 
-app.listen(3000, () => {
-    console.log('Server is cooking at http://127.0.0.1:3000/');
-});
+app.listen(3000);
+console.log('listening on http://127.0.0.1:3000/');

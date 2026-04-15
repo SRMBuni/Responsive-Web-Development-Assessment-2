@@ -1,45 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
     <link href="/style.css" rel="stylesheet" type="text/css">
     <title>Cookbook</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="box">
-        <h1 class="title">The Foodle Woogle</h1>
-        <form id="searchform" action="/recipe" method="GET">
-            <input type="text" id="query" name="q" placeholder="Name of Dish" required>
-            <input id="sub" type="submit" value="Search">
-            <a href="/lucky">
-                <button type="button">I'm feeling hungry</button>
-            </a>
-        </form>
+      <h1 class="title">The Foodle Woogle</h1>
+      <form id="searchform" action="/recipe" method="GET">
+        <input type="text" id="query" name="q" placeholder="Name of Dish" required>
+        <input id="sub" type="submit" value="Search">
+        <a href="/lucky">
+          <button type="button">I'm feeling hungry</button>
+        </a>
+      </form>
     </div>
 
     <% if (typeof error !== 'undefined' && error) { %>
-        <div class="box" id="errorbox">
-            <h2>No Results Found</h2>
-            <p><%= error %></p>
-        </div>
+      <div class="box">
+        <h2>No Results</h2>
+        <p>We couldn't find anything for "<strong><%= query %></strong>". Try another dish!</p>
+      </div>
     <% } %>
 
-    <% if (typeof meal !== 'undefined' && meal) { %>
-        <div class="box" id="resultbox">
-            <h1><%= meal.strMeal %></h1>
-            <img src="<%= meal.strMealThumb %>" width="380" alt="Dish image">
-            
-            <h2>Description</h2>
-            <p><%= meal.strMeal %> is a(n) <%= meal.strArea %> <%= meal.strCategory %> dish.</p>
-            
-            <h2>Preparation</h2>
-            <p style="white-space: pre-line;"><%= meal.strInstructions %></p>
-            
-            <% if (meal.strSource) { %>
-                <p><strong>More information:</strong> <a href="<%= meal.strSource %>" target="_blank">View Original Source</a></p>
-            <% } %>
-        </div>
+    <% if (results) { %>
+    <div class="box" id="resultbox">
+      <h1><%= m_name %></h1>
+      <img src="<%= m_thumb %>" width="380">
+      <h2>Description</h2>
+      <p><%= m_name %> is a(n) <%= m_orig %> <%= m_cat %> dish.</p>
+      <h2>Preparation</h2>
+      <p style="white-space: pre-line;"><%= m_inst %></p>
+      <p><strong>More information:</strong> <a href="<%= m_src %>" target="_blank"><%= m_src %></a>.</p>
+    </div>
     <% } %>
-</body>
+  </body>
 </html>
